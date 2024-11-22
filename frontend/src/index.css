@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap');
+
+html,
+body {
+  font-family : 'Figtree', sans-serif;
+  font-optical-sizing : auto;
+  font-weight : 500; 
+  font-style: normal;
+}
+
+:root {
+  height : 100%;
+  background-color : black;
+  color-scheme: dark;
+}
+
+.animation-slideIn {
+  position: relative;
+  height: auto;
+  right: -500px; 
+  -webkit-animation: slide 0.5s forwards;
+  -webkit-animation-delay: 0.5s forwards;
+  animation: slide 0.5s forwards;
+  animation-delay: 0.25s;
+}
+
+@-webkit-keyframes slide {
+  100% { right: 0%; overflow-x: auto;}
+}
+
+@keyframes slide {
+  100% { right: 0%; overflow-x: auto;}
+}

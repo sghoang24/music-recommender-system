@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -e
+set -x
+
+isort --force-single-line-imports app app/tests
+autoflake --recursive --remove-all-unused-imports --remove-unused-variables --in-place app app/tests
+isort app app/tests
+
+# Run black excluding the specified folder
+black --line-length 120 --exclude="venv/|alembic/|\.venv/" .
