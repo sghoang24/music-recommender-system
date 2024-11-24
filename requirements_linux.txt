@@ -60,11 +60,13 @@ parso==0.8.4
 passlib==1.7.4
 pathspec==0.12.1
 pendulum==3.0.0
+pexpect==4.9.0
 platformdirs==4.3.6
 prompt_toolkit==3.0.48
 propcache==0.2.0
 psutil==6.1.0
 psycopg2-binary==2.9.10
+ptyprocess==0.7.0
 pure_eval==0.2.3
 pyasn1==0.6.1
 pydantic==2.9.2
@@ -79,7 +81,6 @@ python-dotenv==1.0.1
 python-jose==3.3.0
 python-multipart==0.0.17
 pytz==2024.2
-# pywin32==308
 PyYAML==6.0.2
 pyzmq==26.2.0
 ratelimit==2.2.1
@@ -103,8 +104,8 @@ typing_extensions==4.12.2
 tzdata==2024.2
 ujson==5.10.0
 uvicorn==0.32.0
+uvloop==0.21.0
 watchfiles==0.24.0
 wcwidth==0.2.13
 websockets==14.1
-# win32-setctime==1.1.0
 yarl==1.17.2

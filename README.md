@@ -19,10 +19,10 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 # Migration database
-alembic upgrade
+alembic upgrade head
 ```
 
-Create `.env` file following `example.env` in both `backend` and `recommendation` folder
+Create `.env` file following `example.env` in both `backend` and `recommendation` folder (Don't need AWS env)
 
 
 ## Database Migration 💾
