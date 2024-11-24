@@ -135,7 +135,7 @@ async def change_password_after_reset(email: str, password: str, db: Session = D
 async def change_password_with_authentication(
     password: str,
     db: Session = Depends(db_session),
-    current_user: UserSchema = Depends(authentication_service.get_current_active_user),
+    current_user: UserSchema = Depends(authentication_service.get_current_user),
 ):
     """Change the user's password with authentication."""
     try:

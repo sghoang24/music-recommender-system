@@ -21,10 +21,11 @@ Base = db.Base
 
 def db_session() -> Session:
     """Provide a thread-safe session."""
+    session_db = db.SessionLocal()
     try:
-        yield db.SessionLocal()
+        yield session_db
     finally:
-        db.SessionLocal().close()
+        session_db.close()
 
 
 custom_logger.info("Connect to PostgreSQL Database Success.")

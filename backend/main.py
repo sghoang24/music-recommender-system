@@ -71,7 +71,7 @@ def get_application() -> FastAPI:
 
     @application.get("/docs", include_in_schema=False)
     async def custom_swagger_ui_html(
-        # current_user: UserSchema = Depends(authentication_service.get_current_active_user)
+        # current_user: UserSchema = Depends(authentication_service.get_current_user)
     ):
         """Swagger UI."""
         return get_swagger_ui_html(
