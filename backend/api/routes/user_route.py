@@ -43,18 +43,18 @@ async def create_user_account(user: UserCreateSchema, db: Session = Depends(db_s
 
 @router.post("/preferences", response_model=UserSchema, include_in_schema=True)
 async def create_user_preferences(
-    user_id: UUID = Body(..., embed=True),
     preferences: List[str] = Body(..., embed=True),
     db: Session = Depends(db_session),
+    current_user: UserSchema = Depends(authentication_service.get_current_user),
 ):
     """Create user preferences."""
     try:
-        if not user_execute.get_user(db, user_id=user_id):
+        if not user_execute.get_user(db, user_id=current_user.id):
             raise ValueError(UserNotFoundError)
 
         return user_service.create_user_preferences(
             db=db,
-            user_id=user_id,
+            user_id=current_user.id,
             preferences=preferences,
         )
 
