@@ -77,7 +77,7 @@ def update_artist(db: Session, update_info: ArtistUpdateSchema) -> Artist:
 def delete_artist(db: Session, artist_id: UUID) -> Artist:
     """Delete artist."""
     try:
-        if artist := db.query(Artist).filter(Artist.id == artist_id):
+        if artist := db.query(Artist).filter(Artist.id == artist_id).first():
             db.delete(artist)
             db.commit()
             return artist

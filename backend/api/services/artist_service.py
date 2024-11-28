@@ -64,11 +64,13 @@ class ArtistService:
     def update_artist(db: Session, update_info: dict) -> Artist:
         """Update artist."""
         birthday = update_info.get("birthday", None)
+        if isinstance(birthday, str):
+            birthday = datetime.strptime(birthday, "%Y-%m-%d")
         update_info = ArtistUpdateSchema(
             id=update_info.get("id", None),
             name=update_info.get("name", None),
             nationality=update_info.get("nationality", None),
-            birthday=datetime.strptime(birthday, "%Y-%m-%d"),
+            birthday=birthday,
         )
         return artist_execute.update_artist(db, update_info)
 
