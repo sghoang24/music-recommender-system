@@ -17,7 +17,7 @@ class GenreService:
         pass
 
     @staticmethod
-    def create_genre(db: Session, genre_schema: GenreCreateSchema) -> Genre:
+    def create_genre(db: Session, genre_schema: GenreCreateSchema) -> Genre: #đã có
         """Create new genre."""
         if genre_execute.get_genre_by_name(db, genre_schema.name):
             raise ValueError(f"Genre name `{genre_schema.name}` has existed.")
@@ -33,17 +33,17 @@ class GenreService:
         return genre_execute.create_genres_bulk(db, new_genres)
 
     @staticmethod
-    def get_genre(db: Session, genre_id: UUID) -> Genre:
+    def get_genre(db: Session, genre_id: UUID) -> Genre: #đã có
         """Get genre."""
         return genre_execute.get_genre(db, genre_id)
 
     @staticmethod
-    def get_genre_by_name(db: Session, genre_name: str) -> List[Genre]:
+    def get_genre_by_name(db: Session, genre_name: str) -> List[Genre]: # chính xác luôn
         """Get genre by name."""
         return genre_execute.get_genre_by_name(db, genre_name)
 
     @staticmethod
-    def search_genres_by_name(db: Session, genre_name: str) -> List[Genre]:
+    def search_genres_by_name(db: Session, genre_name: str) -> List[Genre]: # gần giống
         """Search genres by name."""
         return genre_execute.search_genres_by_name(db, genre_name)
 
@@ -53,14 +53,14 @@ class GenreService:
         return genre_execute.get_all_genres(db, offset, limit)
 
     @staticmethod
-    def update_genre(db: Session, update_info: dict) -> Genre:
+    def update_genre(db: Session, update_info: dict) -> Genre:  #đã có
         """Update genre."""
         return genre_execute.update_genre(
             db=db, genre_id=update_info.get("id", None), genre_name=update_info.get("name", None)
         )
 
     @staticmethod
-    def delete_genre(db: Session, genre_id: UUID) -> Genre:
+    def delete_genre(db: Session, genre_id: UUID) -> Genre: #đã có
         """Delete genre."""
         return genre_execute.delete_genre(db, genre_id)
 
