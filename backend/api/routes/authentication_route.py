@@ -121,8 +121,6 @@ async def login_to_swagger_docs(auth: BasicAuth = Depends(basic_auth), db: Sessi
 
 
 @router.get("/user/me", response_model=UserSchema)
-async def get_current_information(
-    current_user: UserSchema = Depends(authentication_service.get_current_user)
-):
+async def get_current_information(current_user: UserSchema = Depends(authentication_service.get_current_user)):
     """Get information of the current user."""
     return current_user

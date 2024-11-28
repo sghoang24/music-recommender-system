@@ -36,4 +36,5 @@ class LikedTrackService:
         ]
         return liked_track_execute.create_liked_tracks_bulk(db, new_tracks)
 
+
 liketrack_service = LikedTrackService()

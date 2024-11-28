@@ -1,8 +1,8 @@
 # pylint: disable=E0401
 """Artist route."""
 
-from uuid import UUID
 from typing import List
+from uuid import UUID
 
 from api.database.models import db_session
 from api.errors.error_message import BaseErrorMessage
@@ -13,8 +13,8 @@ from fastapi import APIRouter, Depends
 from logger.logger import custom_logger
 from sqlalchemy.orm import Session
 
-
 router = APIRouter()
+
 
 @router.post("", include_in_schema=True)
 async def create_artist(artist_schema: ArtistCreateSchema, db: Session = Depends(db_session)):
@@ -33,6 +33,7 @@ async def create_artist(artist_schema: ArtistCreateSchema, db: Session = Depends
         custom_logger.exception(e)
         return BaseResponse.error_response(message=f"An error occurred: {e}")
 
+
 @router.post("/bulk", include_in_schema=True)
 async def create_artists_bulk(artist_schemas: List[ArtistCreateSchema], db: Session = Depends(db_session)):
     """Bulk create artists."""
@@ -49,6 +50,7 @@ async def create_artists_bulk(artist_schemas: List[ArtistCreateSchema], db: Sess
     except Exception as e:
         custom_logger.exception(e)
         return BaseResponse.error_response(message=f"An error occurred: {e}")
+
 
 @router.get("/get-by-id", include_in_schema=True)
 async def get_artist(artist_id: UUID, db: Session = Depends(db_session)):
@@ -84,6 +86,7 @@ async def get_all_artists(offset: int = 0, limit: int = 10, db: Session = Depend
     except Exception as e:
         custom_logger.exception(e)
         return BaseResponse.error_response(message=f"An error occurred: {e}")
+
 
 @router.put("", include_in_schema=True)
 async def update_artist(artist_schema: ArtistUpdateSchema, db: Session = Depends(db_session)):
@@ -123,7 +126,7 @@ async def delete_artist(artist_id: UUID, db: Session = Depends(db_session)):
 
 @router.get("/search", include_in_schema=True)
 async def search_artists_by_name(artist_name: str, db: Session = Depends(db_session)):
-    """Search artists by name.""" 
+    """Search artists by name."""
     try:
         artists = artist_service.search_artists_by_name(db, artist_name)
         return BaseResponse.success_response(data=artists)
@@ -139,7 +142,7 @@ async def search_artists_by_name(artist_name: str, db: Session = Depends(db_sess
         return BaseResponse.error_response(message=f"An error occurred: {e}")
 
 
-@router.get("/get-by-name",include_in_schema=True)
+@router.get("/get-by-name", include_in_schema=True)
 async def get_artist_by_name(artist_name: str, db: Session = Depends(db_session)):
     """Get artist by exact name."""
     try:

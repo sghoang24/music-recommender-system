@@ -1,7 +1,7 @@
 """Genre route."""
 
-from uuid import UUID
 from typing import List
+from uuid import UUID
 
 from api.database.models import db_session
 from api.errors.error_message import BaseErrorMessage
@@ -125,7 +125,7 @@ async def delete_genre(genre_id: UUID, db: Session = Depends(db_session)):
 
 @router.get("/search", include_in_schema=True)
 async def search_genres_by_name(genre_name: str, db: Session = Depends(db_session)):
-    """Search genres by name.""" 
+    """Search genres by name."""
     try:
         genres = genre_service.search_genres_by_name(db, genre_name)
         return BaseResponse.success_response(data=genres)
@@ -141,7 +141,7 @@ async def search_genres_by_name(genre_name: str, db: Session = Depends(db_sessio
         return BaseResponse.error_response(message=f"An error occurred: {e}")
 
 
-@router.get("/get-by-name",include_in_schema=True)
+@router.get("/get-by-name", include_in_schema=True)
 async def get_genre_by_name(genre_name: str, db: Session = Depends(db_session)):
     """Get genre by exact name."""
     try:
