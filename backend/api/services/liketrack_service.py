@@ -22,7 +22,7 @@ class LikedTrackService:
             user_id=like_track_schema.user_id,
             track_id=like_track_schema.track_id,
         )
-        return liked_track_execute.create_liked_track(db, track=new_track)
+        return liked_track_execute.create_liked_track(db, liked_track=new_track)
 
     @staticmethod
     def create_liked_tracks_bulk(db: Session, like_track_schemas: List[LikedTrackCreateSchema]) -> List[LikedTrack]:
@@ -36,5 +36,4 @@ class LikedTrackService:
         ]
         return liked_track_execute.create_liked_tracks_bulk(db, new_tracks)
 
-
-track_service = LikedTrackService()
+liketrack_service = LikedTrackService()
