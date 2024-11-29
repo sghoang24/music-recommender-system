@@ -122,7 +122,6 @@ async def app_handler(scope, receive, send):
     await app(scope, receive, send)
 
 
-
 app = get_application()
 
 if __name__ == "__main__":

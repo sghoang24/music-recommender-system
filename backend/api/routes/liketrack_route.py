@@ -2,7 +2,6 @@
 """Liked Track routes."""
 
 from typing import List
-from uuid import UUID
 
 from api.database.models import db_session
 from api.errors.error_message import BaseErrorMessage
@@ -34,9 +33,7 @@ async def create_liked_track(like_track_schema: LikedTrackCreateSchema, db: Sess
 
 
 @router.post("/bulk", include_in_schema=True)
-async def create_liked_tracks_bulk(
-    like_track_schemas: List[LikedTrackCreateSchema], db: Session = Depends(db_session)
-):
+async def create_liked_tracks_bulk(like_track_schemas: List[LikedTrackCreateSchema], db: Session = Depends(db_session)):
     """Bulk create liked tracks."""
     try:
         return liketrack_service.create_liked_tracks_bulk(db, like_track_schemas)
