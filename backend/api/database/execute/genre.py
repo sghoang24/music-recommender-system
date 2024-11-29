@@ -68,7 +68,7 @@ def update_genre(db: Session, genre_id: UUID, genre_name: str) -> Genre:
 def delete_genre(db: Session, genre_id: UUID) -> Genre:
     """Delete genre."""
     try:
-        if genre := db.query(Genre).filter(Genre.id == genre_id):
+        if genre := db.query(Genre).filter(Genre.id == genre_id).first():
             db.delete(genre)
             db.commit()
             return genre

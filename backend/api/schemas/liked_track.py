@@ -15,6 +15,14 @@ class LikedTrackCreateSchema(BaseModel):
     track_id: UUID = Field(..., description="Unique identifier of track.")
 
 
+class LikedTrackGetSchema(BaseModel):
+    """Liked Track Get Schema."""
+
+    user_id: UUID = Field(..., description="Unique identifier of user.")
+    offset: int = Field(0, description="Offset.")
+    limit: int = Field(50, description="Limit.")
+
+
 class LikedTrackDisplay(BaseModel):
     """Liked Track schema."""
 

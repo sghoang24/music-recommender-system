@@ -39,14 +39,14 @@ def get_liked_track(db: Session, user_id: UUID, track_id: UUID) -> LikedTrack:
 
 
 def get_liked_tracks_by_user(db: Session, user_id: UUID, offset: int = 0, limit: int = 100):
-    """Get liked tracks."""
+    """Get liked tracks by user."""
     tracks = (
         db.query(
             Track.title.label("title"),
             Track.cover_art.label("cover_art"),
             Track.mp3_url.label("mp3_url"),
             Track.tags.label("tags"),
-            Track.release_date.label("release_date"),
+            Album.release_date.label("release_date"),
             Album.name.label("album"),
             Artist.name.label("artist"),
             Genre.name.label("genre"),
@@ -76,3 +76,18 @@ def get_liked_tracks_by_user(db: Session, user_id: UUID, offset: int = 0, limit:
         for track in tracks
     ]
     return ListLikedTrackDisplay(total_entries=len(liked_track), lisk_liked_tracks=liked_track)
+
+
+def delete_liked_track(db: Session, user_id: UUID, track_id: UUID) -> LikedTrack:
+    """Delete liked track."""
+    if liked_track := (
+        db.query(LikedTrack)
+        .filter(
+            LikedTrack.user_id == user_id,
+            LikedTrack.track_id == track_id,
+        )
+        .first()
+    ):
+        db.delete(liked_track)
+        db.commit()
+        return liked_track

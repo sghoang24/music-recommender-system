@@ -10,22 +10,22 @@
 - [ ] Test all API.
 
 #### Khánh Dương
-- [ ] Write API route and service for `liked_track` following `main_old.py` in `backend` service.
-- [ ] Test API for `liked_track`.
+- [x] Write API route and service for `liked_track` following `main_old.py` in `backend` service.
+- [x] Test API for `liked_track`.
 - [ ] Check API in `recommendation` service.
 
 #### Quốc Cường
-- [ ] Write API route and service for `genres` following `main_old.py` in `backend` service.
-- [ ] Test API for `genres`.
+- [x] Write API route and service for `genres` following `main_old.py` in `backend` service.
+- [x] Test API for `genres`.
 - [ ] Check API in `recommendation` service.
 
 #### Trung Hoàng
-- [ ] Write API route and service for `genres` and `artists` following `main_old.py` in `backend` service.
+- [x] Write API route and service for `genres` and `artists` following `main_old.py` in `backend` service.
 - [ ] Test all API.
 
 #### Hoàng Quân
 - [ ] Write API route and service for `track` following `main_old.py` in `backend` service.
-- [ ] Test all API..
+- [ ] Test all API.
 - [ ] Support **Front-End**.
 
 #### Phúc Khương

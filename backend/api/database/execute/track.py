@@ -1,6 +1,7 @@
 # pylint: disable=E0401
 """Track execute."""
 
+import random
 from typing import List
 from uuid import UUID
 
@@ -57,6 +58,16 @@ def get_tracks_by_user_preferences(db: Session, user_id: UUID, limit: int = 100)
     if limit:
         track = track.limit(limit)
     return track.all()
+
+
+def get_random_tracks(db: Session, limit: int = 10) -> List[Track]:
+    """Get random tracks with limit."""
+    all_ids = db.query(Track.id).all()
+    if not all_ids:
+        return []
+
+    random_ids = random.sample([id[0] for id in all_ids], min(limit, len(all_ids)))
+    return db.query(Track).order_by(Track.id.in_(random_ids)).all()
 
 
 def search_tracks(db: Session, query: str, genres: str, limit: int = 100):

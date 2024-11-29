@@ -88,42 +88,6 @@ async def get_all_artists(offset: int = 0, limit: int = 10, db: Session = Depend
         return BaseResponse.error_response(message=f"An error occurred: {e}")
 
 
-@router.put("", include_in_schema=True)
-async def update_artist(artist_schema: ArtistUpdateSchema, db: Session = Depends(db_session)):
-    """Update artist."""
-    try:
-        return artist_service.update_artist(db, artist_schema.dict())
-
-    except ValueError as e:
-        error_object: BaseErrorMessage = e.args[0]
-        return BaseResponse.error_response(
-            message_code=error_object.message_code,
-            message=error_object.message,
-            status_code=error_object.status_code,
-        )
-    except Exception as e:
-        custom_logger.exception(e)
-        return BaseResponse.error_response(message=f"An error occurred: {e}")
-
-
-@router.delete("", include_in_schema=True)
-async def delete_artist(artist_id: UUID, db: Session = Depends(db_session)):
-    """Delete artist."""
-    try:
-        return artist_service.delete_artist(db, artist_id)
-
-    except ValueError as e:
-        error_object: BaseErrorMessage = e.args[0]
-        return BaseResponse.error_response(
-            message_code=error_object.message_code,
-            message=error_object.message,
-            status_code=error_object.status_code,
-        )
-    except Exception as e:
-        custom_logger.exception(e)
-        return BaseResponse.error_response(message=f"An error occurred: {e}")
-
-
 @router.get("/search", include_in_schema=True)
 async def search_artists_by_name(artist_name: str, db: Session = Depends(db_session)):
     """Search artists by name."""
@@ -148,6 +112,42 @@ async def get_artist_by_name(artist_name: str, db: Session = Depends(db_session)
     try:
         artist = artist_service.get_artist_by_name(db, artist_name)
         return BaseResponse.success_response(data=artist)
+    except ValueError as e:
+        error_object: BaseErrorMessage = e.args[0]
+        return BaseResponse.error_response(
+            message_code=error_object.message_code,
+            message=error_object.message,
+            status_code=error_object.status_code,
+        )
+    except Exception as e:
+        custom_logger.exception(e)
+        return BaseResponse.error_response(message=f"An error occurred: {e}")
+
+
+@router.put("", include_in_schema=True)
+async def update_artist(artist_schema: ArtistUpdateSchema, db: Session = Depends(db_session)):
+    """Update artist."""
+    try:
+        return artist_service.update_artist(db, artist_schema.dict())
+
+    except ValueError as e:
+        error_object: BaseErrorMessage = e.args[0]
+        return BaseResponse.error_response(
+            message_code=error_object.message_code,
+            message=error_object.message,
+            status_code=error_object.status_code,
+        )
+    except Exception as e:
+        custom_logger.exception(e)
+        return BaseResponse.error_response(message=f"An error occurred: {e}")
+
+
+@router.delete("", include_in_schema=True)
+async def delete_artist(artist_id: UUID, db: Session = Depends(db_session)):
+    """Delete artist."""
+    try:
+        return artist_service.delete_artist(db, artist_id)
+
     except ValueError as e:
         error_object: BaseErrorMessage = e.args[0]
         return BaseResponse.error_response(

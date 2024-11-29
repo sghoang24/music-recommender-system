@@ -26,15 +26,20 @@ Create `.env` file following `example.env` in both `backend` and `recommendation
 
 
 ## Database Migration 💾
-Auto generate migration version
+**Auto generate migration version**
 ```shell
 alembic revision --autogenerate -m <message here>
 ```
 
-Upgrade migration to database
+**Upgrade migration to database**
 ```shell
 alembic upgrade head
 ```
+
+
+## Check Back-End and Recommend service API Docs 📃
+- **Back-End:** `http://localhost:8008/docs`
+- **Recommend:** `http://localhost:8009/docs`
 
 
 ## Run app with uvicorn 🚀
@@ -60,9 +65,8 @@ uvicorn main:app --host 0.0.0.0 --port 8009 --reload
 python main.py
 ```
 
-
 ## Run tools 🌍
-- Run auto format: 
+- **Run auto format:**
 ```shell
 # Windows
 format/format.bat
@@ -70,7 +74,7 @@ format/format.bat
 format/format.sh
 ```
 
-- Run pylint: 
+- **Run pylint:**
 ```shell
 pylint backend/
 # OR

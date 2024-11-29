@@ -5,7 +5,10 @@ from typing import List
 
 from api.database.execute import liked_track as liked_track_execute
 from api.database.models import LikedTrack
-from api.schemas.liked_track import LikedTrackCreateSchema
+from api.schemas.liked_track import (
+    LikedTrackCreateSchema,
+    LikedTrackGetSchema,
+)
 from sqlalchemy.orm import Session
 
 
@@ -35,6 +38,34 @@ class LikedTrackService:
             for like_track_schema in like_track_schemas
         ]
         return liked_track_execute.create_liked_tracks_bulk(db, new_tracks)
+
+    @staticmethod
+    def get_liked_track(db: Session, liked_track_schema: LikedTrackCreateSchema):
+        """Get liked track."""
+        return liked_track_execute.get_liked_track(
+            db=db,
+            user_id=liked_track_schema.user_id,
+            track_id=liked_track_schema.track_id,
+        )
+
+    @staticmethod
+    def get_liked_tracks_by_user(db: Session, liked_track_schema: LikedTrackGetSchema):
+        """Get liked track."""
+        return liked_track_execute.get_liked_tracks_by_user(
+            db=db,
+            user_id=liked_track_schema.user_id,
+            offset=liked_track_schema.offset,
+            limit=liked_track_schema.limit,
+        )
+
+    @staticmethod
+    def delete_liked_track(db: Session, liked_track_schema: LikedTrackCreateSchema):
+        """Get liked track."""
+        return liked_track_execute.delete_liked_track(
+            db=db,
+            user_id=liked_track_schema.user_id,
+            track_id=liked_track_schema.track_id,
+        )
 
 
 liketrack_service = LikedTrackService()
