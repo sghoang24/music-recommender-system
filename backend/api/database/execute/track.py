@@ -39,12 +39,55 @@ class TrackRepository:
     @staticmethod
     def get_track(db: Session, track_id: UUID) -> Track:
         """Get track."""
-        return db.query(Track).filter(Track.id == track_id).first()
+        track = (
+            db.query(
+                Track.id.label("id"),
+                Track.title.label("title"),
+                Album.name.label("album"),
+                Artist.name.label("artist"),
+                Genre.name.label("genre"),
+                Track.cover_art.label("cover_art"),
+                Track.mp3_url.label("mp3_url"),
+                Track.tags.label("tags"),
+                Album.release_date.label("release_date"),
+            )
+            .join(Album, Album.id == Track.album_id)
+            .join(Artist, Artist.id == Track.artist_id)
+            .join(Genre, Genre.id == Track.genre_id)
+            .filter(Track.id == track_id)
+            .first()
+        )
+        return TrackDisplay(
+            id=track.id,
+            title=track.title,
+            artist=track.artist,
+            genre=track.genre,
+            album=track.album,
+            cover_art=track.cover_art,
+            mp3_url=track.mp3_url,
+            tags=track.tags,
+            release_date=track.release_date,
+        )
 
     @staticmethod
     def get_all_tracks(db: Session, offset: int = 0, limit: int = 100) -> List[Track]:
         """Get all tracks with offset and limit."""
-        query = db.query(Track)
+        query = (
+            db.query(
+                Track.id.label("id"),
+                Track.title.label("title"),
+                Album.name.label("album"),
+                Artist.name.label("artist"),
+                Genre.name.label("genre"),
+                Track.cover_art.label("cover_art"),
+                Track.mp3_url.label("mp3_url"),
+                Track.tags.label("tags"),
+                Album.release_date.label("release_date"),
+            )
+            .join(Album, Album.id == Track.album_id)
+            .join(Artist, Artist.id == Track.artist_id)
+            .join(Genre, Genre.id == Track.genre_id)
+        )
         if offset:
             query = query.offset(offset)
         if limit:
@@ -55,7 +98,44 @@ class TrackRepository:
     @staticmethod
     def get_track_by_name(db: Session, track_name: str) -> List[Track]:
         """Search tracks by name."""
-        return db.query(Track).filter(Track.title == track_name).all()
+        tracks = (
+            db.query(
+                Track.id.label("id"),
+                Track.title.label("title"),
+                Album.name.label("album"),
+                Artist.name.label("artist"),
+                Genre.name.label("genre"),
+                Track.cover_art.label("cover_art"),
+                Track.mp3_url.label("mp3_url"),
+                Track.tags.label("tags"),
+                Album.release_date.label("release_date"),
+            )
+            .join(Album, Album.id == Track.album_id)
+            .join(Artist, Artist.id == Track.artist_id)
+            .join(Genre, Genre.id == Track.genre_id)
+            .filter(Track.title == track_name)
+        )
+        if limit:
+            tracks = tracks.limit(limit)
+        tracks = tracks.all()
+        display_tracks = [
+            TrackDisplay(
+                id=track.id,
+                title=track.title,
+                artist=track.artist,
+                genre=track.genre,
+                album=track.album,
+                cover_art=track.cover_art,
+                mp3_url=track.mp3_url,
+                tags=track.tags,
+                release_date=track.release_date,
+            )
+            for track in tracks
+        ]
+        return ListTrackDisplay(
+            total_entries=len(display_tracks),
+            lisk_tracks=display_tracks,
+        )
 
     @staticmethod
     def get_random_tracks(db: Session, limit: int = 50) -> List[Track]:
@@ -68,12 +148,84 @@ class TrackRepository:
             [id[0] for id in all_ids],
             min(limit, len(all_ids))
         )
-        return db.query(Track).filter(Track.id.in_(random_ids)).all()
+        tracks = (
+            db.query(
+                Track.id.label("id"),
+                Track.title.label("title"),
+                Album.name.label("album"),
+                Artist.name.label("artist"),
+                Genre.name.label("genre"),
+                Track.cover_art.label("cover_art"),
+                Track.mp3_url.label("mp3_url"),
+                Track.tags.label("tags"),
+                Album.release_date.label("release_date"),
+            )
+            .join(Album, Album.id == Track.album_id)
+            .join(Artist, Artist.id == Track.artist_id)
+            .join(Genre, Genre.id == Track.genre_id)
+            .filter(Track.id.in_(random_ids))
+            .all()
+        )
+        display_tracks = [
+            TrackDisplay(
+                id=track.id,
+                title=track.title,
+                artist=track.artist,
+                genre=track.genre,
+                album=track.album,
+                cover_art=track.cover_art,
+                mp3_url=track.mp3_url,
+                tags=track.tags,
+                release_date=track.release_date,
+            )
+            for track in tracks
+        ]
+        return ListTrackDisplay(
+            total_entries=len(display_tracks),
+            lisk_tracks=display_tracks,
+        )
 
     @staticmethod
     def get_track_by_artist(db: Session, artist_id: UUID, limit: int = 50) -> List[Track]:
         """Get track by artist."""
-        return db.query(Track).filter(Track.artist_id == artist_id).limit(limit).all()
+        tracks = (
+            db.query(
+                Track.id.label("id"),
+                Track.title.label("title"),
+                Album.name.label("album"),
+                Artist.name.label("artist"),
+                Genre.name.label("genre"),
+                Track.cover_art.label("cover_art"),
+                Track.mp3_url.label("mp3_url"),
+                Track.tags.label("tags"),
+                Album.release_date.label("release_date"),
+            )
+            .join(Album, Album.id == Track.album_id)
+            .join(Artist, Artist.id == Track.artist_id)
+            .join(Genre, Genre.id == Track.genre_id)
+            .filter(Track.artist_id == artist_id)
+        )
+        if limit:
+            tracks = tracks.limit(limit)
+        tracks = tracks.all()
+        display_tracks = [
+            TrackDisplay(
+                id=track.id,
+                title=track.title,
+                artist=track.artist,
+                genre=track.genre,
+                album=track.album,
+                cover_art=track.cover_art,
+                mp3_url=track.mp3_url,
+                tags=track.tags,
+                release_date=track.release_date,
+            )
+            for track in tracks
+        ]
+        return ListTrackDisplay(
+            total_entries=len(display_tracks),
+            lisk_tracks=display_tracks,
+        )
 
     @staticmethod
     def search_tracks(db: Session, query: str, genres: str, limit: int = 50):
@@ -84,7 +236,20 @@ class TrackRepository:
         search_artists = artist_execute.search_artists_by_name(db=db, artist_name=query)
         search_artist_ids = [artist.id for artist in search_artists]
         tracks = (
-            db.query(Track)
+            db.query(
+                Track.id.label("id"),
+                Track.title.label("title"),
+                Album.name.label("album"),
+                Artist.name.label("artist"),
+                Genre.name.label("genre"),
+                Track.cover_art.label("cover_art"),
+                Track.mp3_url.label("mp3_url"),
+                Track.tags.label("tags"),
+                Album.release_date.label("release_date"),
+            )
+            .join(Album, Album.id == Track.album_id)
+            .join(Artist, Artist.id == Track.artist_id)
+            .join(Genre, Genre.id == Track.genre_id)
             .filter(
                 or_(
                     Track.title.ilike(f"%{query}%"),
@@ -99,7 +264,25 @@ class TrackRepository:
             tracks = tracks.filter(Track.genre_id.in_(all_genre_ids))
         if limit:
             tracks = tracks.limit(limit)
-        return tracks.all()
+        tracks = tracks.all()
+                display_tracks = [
+            TrackDisplay(
+                id=track.id,
+                title=track.title,
+                artist=track.artist,
+                genre=track.genre,
+                album=track.album,
+                cover_art=track.cover_art,
+                mp3_url=track.mp3_url,
+                tags=track.tags,
+                release_date=track.release_date,
+            )
+            for track in tracks
+        ]
+        return ListTrackDisplay(
+            total_entries=len(display_tracks),
+            lisk_tracks=display_tracks,
+        )
 
     @staticmethod
     def update_track(db: Session, track_id: UUID, track: Track) -> Track:
