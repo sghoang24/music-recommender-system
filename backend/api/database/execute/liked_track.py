@@ -46,6 +46,7 @@ class LikedTrackRepository:
         """Get liked tracks by user."""
         tracks = (
             db.query(
+                Track.id.label("id"),
                 Track.title.label("title"),
                 Track.cover_art.label("cover_art"),
                 Track.mp3_url.label("mp3_url"),
@@ -68,6 +69,7 @@ class LikedTrackRepository:
         tracks = tracks.all()
         liked_track = [
             LikedTrackDisplay(
+                id=track.id,
                 title=track.title,
                 artist=track.artist,
                 genre=track.genre,
@@ -79,7 +81,10 @@ class LikedTrackRepository:
             )
             for track in tracks
         ]
-        return ListLikedTrackDisplay(total_entries=len(liked_track), lisk_liked_tracks=liked_track)
+        return ListLikedTrackDisplay(
+            total_entries=len(liked_track),
+            list_liked_tracks=liked_track
+        )
 
     @staticmethod
     def delete_liked_track(db: Session, user_id: UUID, track_id: UUID) -> LikedTrack:

@@ -2,6 +2,7 @@
 """Track services."""
 
 from typing import List
+from uuid import UUID
 
 from api.database.execute.track import track_execute
 from api.database.models import Track
@@ -53,7 +54,7 @@ class TrackService:
         track_id = track_update.id
         track_data = track_update.dict(exclude={"id"})
         return track_execute.update_track(db=db, track_id=track_id, track=track_data)
-    
+
     @staticmethod
     def delete_track(db: Session, track_id: int) -> Track:
         """Delete track."""
@@ -63,11 +64,31 @@ class TrackService:
     def get_track_by_name(db: Session, track_name: str) -> List[Track]:
         """Search tracks by name."""
         return track_execute.get_track_by_name(db, track_name)
-    
+
     @staticmethod
     def search_tracks(db: Session, search_query: str, genres: str) -> List[Track]:
         """Search tracks by name."""
         return track_execute.search_tracks(db, search_query, genres)
+
+    @staticmethod
+    async def get_tracks_by_user_preferences(db: Session, user_id: UUID, limit: int = 50):
+        """Get tracks by user preferences."""
+        return track_execute.get_tracks_by_user_preferences(db, user_id, limit)
+
+    @staticmethod
+    async def get_recommendation_by_likes(db: Session, user_id: UUID):
+        """Get recommendation tracks by likes."""
+        return track_execute.get_recommendation_by_likes(db, user_id)
+
+    @staticmethod
+    async def get_recommendation_by_track(db: Session, user_id: UUID):
+        """Get recommendation tracks by tracks."""
+        return track_execute.get_recommendation_by_track(db, user_id)
+
+    @staticmethod
+    async def get_recommendation_by_user(db: Session, user_id: UUID, limit: int = 50):
+        """Get recommendation tracks by user."""
+        return track_execute.get_recommendation_by_user(db, user_id, limit)
 
 
 track_service = TrackService()

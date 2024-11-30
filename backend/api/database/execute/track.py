@@ -7,6 +7,7 @@ from uuid import UUID
 
 from api.database.execute.artist import artist_execute
 from api.database.execute.genre import genre_execute
+from api.database.execute.liked_track import liked_track_execute
 from api.database.models import Album, Artist, Genre, Track, User
 from api.helpers.utils import get_recommendation, get_tags_keywords
 from api.schemas.track import ListTrackDisplay, TrackDisplay
@@ -143,9 +144,40 @@ class TrackRepository:
             # Handle any IntegrityError, such as foreign key violations here
             db.rollback()
             raise e
+    
+    @staticmethod
+    async def get_recommendation_by_likes(db: Session, user_id: UUID):
+        """Get recommendations by likes."""
+        liked_tracks = liked_track_execute.get_liked_tracks_by_user(
+            db=db,
+            user_id=user_id,
+            offset=0,
+            limit=None
+        )
+        if liked_tracks.total_entries == 0:
+            return []
+        track_ids = [liked_track.id for liked_track in liked_tracks.list_liked_tracks]
+        
+        results = []
+        track_ids_set = set()  # Set to store unique track IDs
+        track_titles_set = set()
+
+        for track_id in track_ids:
+            track_ids = await get_recommendation(
+                track_id=track_id,
+                existed_ids=[],
+            )
+            tracks = db.query(Track).filter(Track.id.in_(track_ids)).all()
+            for track in tracks:
+                if track.id not in track_ids_set and track.title not in track_titles_set:  # Check if track ID is already in the set
+                    results.append(track)
+                    track_ids_set.add(track.id)  # Add track ID to the set
+                    track_titles_set.add(track.title) # Add track title to the set
+        
+        return results
 
     @staticmethod
-    async def get_track_recommendation(db: Session, track_id: UUID):
+    async def get_recommendation_by_track(db: Session, track_id: UUID):
         """Get track recommendation."""
         original_track = db.query(Track).filter(Track.id == track_id).first()
         original_tags = get_tags_keywords(original_track.tags)
@@ -215,6 +247,25 @@ class TrackRepository:
             total_entries=len(display_tracks),
             lisk_tracks=display_tracks
         )
+
+    async def get_recommendation_by_user(self, db: Session, user_id: UUID):
+        """Get recommendations by user."""
+        # Check if liked tracks by user exist 
+        recommended_tracks_by_likes = await self.get_recommendation_by_likes(
+            db=db,
+            user_id=user_id,
+        )
+        
+        if recommended_tracks_by_likes: 
+            return recommended_tracks_by_likes
+        
+        # Get tracks by preferences
+        tracks = self.get_tracks_by_user_preferences(
+            db=db,
+            user_id=user_id,
+            limit=50,
+        )
+        return tracks
 
 
 track_execute = TrackRepository()
