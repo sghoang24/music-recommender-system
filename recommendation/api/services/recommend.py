@@ -23,7 +23,6 @@ class RecommendationService:
         distance_array = []
         list_recommend_ids = []
         recommendations = 0
-        print(labels)
 
         # Calculate the latent feature vectors for all the songs.
         for idx, label in enumerate(labels):

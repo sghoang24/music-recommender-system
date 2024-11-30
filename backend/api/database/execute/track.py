@@ -58,7 +58,7 @@ class TrackRepository:
         return db.query(Track).filter(Track.title == track_name).all()
 
     @staticmethod
-    def get_random_tracks(db: Session, limit: int = 10) -> List[Track]:
+    def get_random_tracks(db: Session, limit: int = 50) -> List[Track]:
         """Get random tracks with limit."""
         all_ids = db.query(Track.id).all()
         if not all_ids:
@@ -71,12 +71,12 @@ class TrackRepository:
         return db.query(Track).filter(Track.id.in_(random_ids)).all()
 
     @staticmethod
-    def get_track_by_artist(db: Session, artist_id: UUID, limit: int = 10) -> List[Track]:
+    def get_track_by_artist(db: Session, artist_id: UUID, limit: int = 50) -> List[Track]:
         """Get track by artist."""
         return db.query(Track).filter(Track.artist_id == artist_id).limit(limit).all()
 
     @staticmethod
-    def search_tracks(db: Session, query: str, genres: str, limit: int = 100):
+    def search_tracks(db: Session, query: str, genres: str, limit: int = 50):
         """Search tracks."""
         if genres.lower() != "all":
             genres = genres.split(",")
@@ -131,19 +131,50 @@ class TrackRepository:
             raise e
 
     @staticmethod
-    async def get_tracks_by_user_preferences(db: Session, user_id: UUID, limit: int = 100):
+    async def get_tracks_by_user_preferences(db: Session, user_id: UUID, limit: int = 50):
         """Get tracks by user preferences."""
         user = db.query(User).filter(User.id == user_id).first()
         all_genres = genre_execute.get_all_genres(db=db, offset=0, limit=None)
         all_genre_ids = [genre.id for genre in all_genres if genre.name in user.preferences]
-        track = (
-            db.query(Track)
+        tracks = (
+            db.query(
+                Track.id.label("id"),
+                Track.title.label("title"),
+                Album.name.label("album"),
+                Artist.name.label("artist"),
+                Genre.name.label("genre"),
+                Track.cover_art.label("cover_art"),
+                Track.mp3_url.label("mp3_url"),
+                Track.tags.label("tags"),
+                Album.release_date.label("release_date"),
+            )
+            .join(Album, Album.id == Track.album_id)
+            .join(Artist, Artist.id == Track.artist_id)
+            .join(Genre, Genre.id == Track.genre_id)
             .filter(Track.genre_id.in_(all_genre_ids))
             .order_by(func.random())
         )
         if limit:
-            track = track.limit(limit)
-        return track.all()
+            tracks = tracks.limit(limit)
+        tracks = tracks.all()
+        display_tracks = [
+            TrackDisplay(
+                id=track.id,
+                title=track.title,
+                artist=track.artist,
+                genre=track.genre,
+                album=track.album,
+                cover_art=track.cover_art,
+                mp3_url=track.mp3_url,
+                tags=track.tags,
+                release_date=track.release_date,
+            )
+            for track in tracks
+        ]
+        return ListTrackDisplay(
+            total_entries=len(display_tracks),
+            lisk_tracks=display_tracks,
+        )
 
     async def get_recommendation_by_likes(self, db: Session, user_id: UUID):
         """Get recommendations by likes."""
@@ -167,14 +198,47 @@ class TrackRepository:
                 existed_ids=[],
             )
             track_ids = [UUID(track_id) for track_id in track_ids]
-            tracks = db.query(Track).filter(Track.id.in_(track_ids)).all()
+            tracks = (
+                db.query(
+                    Track.id.label("id"),
+                    Track.title.label("title"),
+                    Album.name.label("album"),
+                    Artist.name.label("artist"),
+                    Genre.name.label("genre"),
+                    Track.cover_art.label("cover_art"),
+                    Track.mp3_url.label("mp3_url"),
+                    Track.tags.label("tags"),
+                    Album.release_date.label("release_date"),
+                )
+                .join(Album, Album.id == Track.album_id)
+                .join(Artist, Artist.id == Track.artist_id)
+                .join(Genre, Genre.id == Track.genre_id)
+                .filter(Track.id.in_(track_ids))
+                .all()
+            )
             for track in tracks:
                 if track.id not in track_ids_set and track.title not in track_titles_set:  # Check if track ID is already in the set
                     results.append(track)
                     track_ids_set.add(track.id)  # Add track ID to the set
                     track_titles_set.add(track.title) # Add track title to the set
-        
-        return results
+        display_tracks = [
+            TrackDisplay(
+                id=track.id,
+                title=track.title,
+                artist=track.artist,
+                genre=track.genre,
+                album=track.album,
+                cover_art=track.cover_art,
+                mp3_url=track.mp3_url,
+                tags=track.tags,
+                release_date=track.release_date,
+            )
+            for track in results
+        ]
+        return ListTrackDisplay(
+            total_entries=len(display_tracks),
+            lisk_tracks=display_tracks,
+        )
 
     @staticmethod
     async def get_recommendation_by_track(db: Session, track_id: UUID):
@@ -225,25 +289,24 @@ class TrackRepository:
                 # Reset title count
                 title_count = {}
                 continue
-
+        display_tracks = []
         for track in tracks:
-            track.tags = get_tags_keywords(track.tags)
-            track.tags = list(set(track.tags) & set(original_tags))
+            new_tags = get_tags_keywords(track.tags)
+            filtered_tags = list(set(new_tags) & set(original_tags))
 
-        display_tracks = [
-            TrackDisplay(
-                id=track.id,
-                title=track.title,
-                artist=track.artist,
-                genre=track.genre,
-                album=track.album,
-                cover_art=track.cover_art,
-                mp3_url=track.mp3_url,
-                tags=track.tags,
-                release_date=track.release_date,
+            display_tracks.append(
+                TrackDisplay(
+                    id=track.id,
+                    title=track.title,
+                    artist=track.artist,
+                    genre=track.genre,
+                    album=track.album,
+                    cover_art=track.cover_art,
+                    mp3_url=track.mp3_url,
+                    tags=filtered_tags,
+                    release_date=track.release_date,
+                )
             )
-            for track in tracks
-        ]
         return ListTrackDisplay(
             total_entries=len(display_tracks),
             lisk_tracks=display_tracks,
