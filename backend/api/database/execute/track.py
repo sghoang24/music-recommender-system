@@ -53,7 +53,7 @@ class TrackRepository:
         return query.all()
 
     @staticmethod
-    def get_tracks_by_user_preferences(db: Session, user_id: UUID, limit: int = 100):
+    async def get_tracks_by_user_preferences(db: Session, user_id: UUID, limit: int = 100):
         """Get tracks by user preferences."""
         user = db.query(User).filter(User.id == user_id).first()
         all_genres = genre_execute.get_all_genres(db=db, offset=0, limit=None)

@@ -221,7 +221,7 @@ async def get_tracks_by_user_preferences(
 ):
     """Get recommendation tracks by user preference."""
     try:
-        return track_service.get_tracks_by_user_preferences(
+        return await track_service.get_tracks_by_user_preferences(
             db=db,
             user_id=user_id,
             limit=limit,
@@ -245,7 +245,7 @@ async def get_recommendation_by_track(
 ):
     """Get recommendation tracks by track."""
     try:
-        return track_service.get_recommendation_by_track(
+        return await track_service.get_recommendation_by_track(
             db=db,
             track_id=track_id,
         )
@@ -268,7 +268,7 @@ async def get_recommendation_by_likes(
 ):
     """Get recommendation tracks by likes."""
     try:
-        return track_service.get_recommendation_by_likes(
+        return await track_service.get_recommendation_by_likes(
             db=db,
             user_id=user_id,
         )
@@ -292,7 +292,7 @@ async def get_recommendation_by_user(
 ):
     """Get recommendation tracks by user."""
     try:
-        return track_service.get_recommendation_by_user(
+        return await track_service.get_recommendation_by_user(
             db=db,
             user_id=user_id,
             limit=limit,

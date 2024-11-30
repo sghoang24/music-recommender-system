@@ -14,11 +14,9 @@ def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
 
 
-def get_tags_keywords(tags: str) -> List[str]:
+def get_tags_keywords(tags: List[str]) -> List[str]:
     """Get tags keywords."""
-    tags_list = tags.split(", ")
-    tags_keywords = [tag.split(":")[0].strip() for tag in tags_list]
-    return tags_keywords
+    return [tag.strip() for tag in tags]
 
 
 async def get_recommendation(track_id: UUID, existed_ids: List[UUID]):
