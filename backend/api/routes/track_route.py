@@ -51,6 +51,38 @@ async def get_track_by_id(track_id: UUID, db: Session = Depends(db_session)):
     except Exception as e:
         custom_logger.exception(e)
         return BaseResponse.error_response(message=f"An error occurred: {e}")
+    
+@router.get("/get-random", include_in_schema=True)
+async def get_random_tracks(limit: int = 10, db: Session = Depends(db_session)):
+    """Get random tracks."""
+    try:
+        return track_service.get_random_tracks(db, limit)
+    except ValueError as e:
+        error_object: BaseErrorMessage = e.args[0]
+        return BaseResponse.error_response(
+            message_code=error_object.message_code,
+            message=error_object.message,
+            status_code=error_object.status_code,
+        )
+    except Exception as e:
+        custom_logger.exception(e)
+        return BaseResponse.error_response(message=f"An error occurred: {e}")
+    
+@router.get("/get-by-artist", include_in_schema=True)
+async def get_track_by_artist(artist_id: UUID, limit: int = 10, db: Session = Depends(db_session)):
+    """Get track by artist."""
+    try:
+        return track_service.get_track_by_artist(db, artist_id, limit)
+    except ValueError as e:
+        error_object: BaseErrorMessage = e.args[0]
+        return BaseResponse.error_response(
+            message_code=error_object.message_code,
+            message=error_object.message,
+            status_code=error_object.status_code,
+        )
+    except Exception as e:
+        custom_logger.exception(e)
+        return BaseResponse.error_response(message=f"An error occurred: {e}")
         
 @router.post("", include_in_schema=True)
 async def create_track(track_schema: TrackCreateSchema, db: Session = Depends(db_session)):

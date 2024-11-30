@@ -70,8 +70,11 @@ def get_random_tracks(db: Session, limit: int = 10) -> List[Track]:
         return []
 
     random_ids = random.sample([id[0] for id in all_ids], min(limit, len(all_ids)))
-    return db.query(Track).order_by(Track.id.in_(random_ids)).all()
+    return db.query(Track).filter(Track.id.in_(random_ids)).all()
 
+def get_track_by_artist(db: Session, artist_id: UUID, limit: int = 10) -> List[Track]:
+    """Get track by artist."""
+    return db.query(Track).filter(Track.artist_id == artist_id).limit(limit).all()
 
 def search_tracks(db: Session, query: str, genres: str, limit: int = 100):
     """Search tracks."""
