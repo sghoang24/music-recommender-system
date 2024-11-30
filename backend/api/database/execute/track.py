@@ -265,7 +265,7 @@ class TrackRepository:
         if limit:
             tracks = tracks.limit(limit)
         tracks = tracks.all()
-                display_tracks = [
+        display_tracks = [
             TrackDisplay(
                 id=track.id,
                 title=track.title,
