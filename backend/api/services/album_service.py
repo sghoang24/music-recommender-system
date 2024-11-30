@@ -4,7 +4,7 @@
 from typing import List
 from uuid import UUID
 
-from api.database.execute import album as album_execute
+from api.database.execute.album import album_execute
 from api.database.models import Album
 from api.schemas.album import AlbumCreateSchema, AlbumUpdateSchema
 from sqlalchemy.orm import Session

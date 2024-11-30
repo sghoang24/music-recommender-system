@@ -4,7 +4,7 @@
 from typing import List, Type
 from uuid import UUID
 
-from api.database.execute import user as user_execute
+from api.database.execute.user import user_execute
 from api.database.models import User
 from api.helpers.utils import get_password_hash
 from api.schemas.user import UserCreateSchema

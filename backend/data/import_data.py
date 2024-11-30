@@ -97,7 +97,7 @@ def extract_tags(tag_string: str):
 
 def import_data():
     """Import data."""
-    df = pd.read_csv("C:\\sghoang\\dut\\music-recommender-system\\backend\\data\\tracks_rows.csv")
+    df = pd.read_csv("tracks_rows.csv")
     df["tags"] = df["tags"].apply(extract_tags)
     df = process_data(db.SessionLocal(), df)
 

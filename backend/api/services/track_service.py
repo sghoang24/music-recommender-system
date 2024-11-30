@@ -3,7 +3,7 @@
 
 from typing import List
 
-from api.database.execute import track as track_execute
+from api.database.execute.track import track_execute
 from api.database.models import Track
 from api.schemas.track import TrackCreateSchema, TrackUpdateSchema
 from sqlalchemy.orm import Session
@@ -68,5 +68,6 @@ class TrackService:
     def search_tracks(db: Session, search_query: str, genres: str) -> List[Track]:
         """Search tracks by name."""
         return track_execute.search_tracks(db, search_query, genres)
+
 
 track_service = TrackService()

@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import List
 from uuid import UUID
 
-from api.database.execute import artist as artist_execute
+from api.database.execute.artist import artist_execute
 from api.database.models import Artist
 from api.schemas.artist import ArtistCreateSchema, ArtistUpdateSchema
 from sqlalchemy.orm import Session

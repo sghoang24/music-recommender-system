@@ -88,7 +88,7 @@ async def unliked_track(
 ):
     """Check liked track."""
     try:
-        return liketrack_service.get_liked_track(db, liked_track_schema)
+        return liketrack_service.delete_liked_track(db, liked_track_schema)
 
     except ValueError as e:
         error_object: BaseErrorMessage = e.args[0]

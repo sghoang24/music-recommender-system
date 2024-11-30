@@ -4,7 +4,7 @@
 from typing import List
 from uuid import UUID
 
-from api.database.execute import genre as genre_execute
+from api.database.execute.genre import genre_execute
 from api.database.models import Genre
 from api.schemas.genre import GenreCreateSchema
 from sqlalchemy.orm import Session

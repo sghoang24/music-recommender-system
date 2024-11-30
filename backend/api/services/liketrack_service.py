@@ -3,7 +3,7 @@
 
 from typing import List
 
-from api.database.execute import liked_track as liked_track_execute
+from api.database.execute.liked_track import liked_track_execute
 from api.database.models import LikedTrack
 from api.schemas.liked_track import (
     LikedTrackCreateSchema,
@@ -60,7 +60,7 @@ class LikedTrackService:
 
     @staticmethod
     def delete_liked_track(db: Session, liked_track_schema: LikedTrackCreateSchema):
-        """Get liked track."""
+        """Delete liked track."""
         return liked_track_execute.delete_liked_track(
             db=db,
             user_id=liked_track_schema.user_id,

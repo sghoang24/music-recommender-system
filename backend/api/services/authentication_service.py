@@ -6,7 +6,7 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 from typing import Optional as Op
 
-from api.database.execute import user as user_execute
+from api.database.execute.user import user_execute
 from api.database.models import User, db_session
 from api.schemas.auth import oauth2_scheme, pwd_context
 from api.schemas.token import TokenDataSchema

@@ -4,7 +4,6 @@
 from typing import List
 from uuid import UUID
 
-from api.database.execute import user as user_execute
 from api.database.models import db_session
 from api.errors.error_message import BaseErrorMessage, EmailRegisteredError, UserNotFoundError
 from api.helpers.utils import get_password_hash
@@ -49,7 +48,7 @@ async def create_user_preferences(
 ):
     """Create user preferences."""
     try:
-        if not user_execute.get_user(db, user_id=current_user.id):
+        if not user_service.get_user_by_id(db=db, user_id=current_user.id):
             raise ValueError(UserNotFoundError)
 
         return user_service.create_user_preferences(
@@ -93,7 +92,7 @@ async def get_all_users(offset: int = 0, limit: int = 100, db: Session = Depends
 async def get_user_by_id(user_id: UUID, db: Session = Depends(db_session)):
     """Get information about a user by user ID."""
     try:
-        db_user = user_execute.get_user(db, user_id=user_id)
+        db_user = user_service.get_user_by_id(db=db, user_id=user_id)
         if not db_user:
             raise ValueError(UserNotFoundError)
         return db_user
