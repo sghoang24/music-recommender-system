@@ -53,21 +53,6 @@ class TrackRepository:
         return query.all()
 
     @staticmethod
-    async def get_tracks_by_user_preferences(db: Session, user_id: UUID, limit: int = 100):
-        """Get tracks by user preferences."""
-        user = db.query(User).filter(User.id == user_id).first()
-        all_genres = genre_execute.get_all_genres(db=db, offset=0, limit=None)
-        all_genre_ids = [genre.id for genre in all_genres if genre.name in user.preferences]
-        track = (
-            db.query(Track)
-            .filter(Track.genre_id.in_(all_genre_ids))
-            .order_by(func.random)
-        )
-        if limit:
-            track = track.limit(limit)
-        return track.all()
-
-    @staticmethod
     def get_track_by_name(db: Session, track_name: str) -> List[Track]:
         """Search tracks by name."""
         return db.query(Track).filter(Track.title == track_name).all()
@@ -144,7 +129,22 @@ class TrackRepository:
             # Handle any IntegrityError, such as foreign key violations here
             db.rollback()
             raise e
-    
+
+    @staticmethod
+    async def get_tracks_by_user_preferences(db: Session, user_id: UUID, limit: int = 100):
+        """Get tracks by user preferences."""
+        user = db.query(User).filter(User.id == user_id).first()
+        all_genres = genre_execute.get_all_genres(db=db, offset=0, limit=None)
+        all_genre_ids = [genre.id for genre in all_genres if genre.name in user.preferences]
+        track = (
+            db.query(Track)
+            .filter(Track.genre_id.in_(all_genre_ids))
+            .order_by(func.random)
+        )
+        if limit:
+            track = track.limit(limit)
+        return track.all()
+
     @staticmethod
     async def get_recommendation_by_likes(db: Session, user_id: UUID):
         """Get recommendations by likes."""
@@ -245,10 +245,10 @@ class TrackRepository:
         ]
         return ListTrackDisplay(
             total_entries=len(display_tracks),
-            lisk_tracks=display_tracks
+            lisk_tracks=display_tracks,
         )
 
-    async def get_recommendation_by_user(self, db: Session, user_id: UUID):
+    async def get_recommendation_by_user(self, db: Session, user_id: UUID, limit: int = 50):
         """Get recommendations by user."""
         # Check if liked tracks by user exist 
         recommended_tracks_by_likes = await self.get_recommendation_by_likes(
@@ -256,14 +256,14 @@ class TrackRepository:
             user_id=user_id,
         )
         
-        if recommended_tracks_by_likes: 
+        if recommended_tracks_by_likes:
             return recommended_tracks_by_likes
         
         # Get tracks by preferences
         tracks = self.get_tracks_by_user_preferences(
             db=db,
             user_id=user_id,
-            limit=50,
+            limit=limit,
         )
         return tracks
 

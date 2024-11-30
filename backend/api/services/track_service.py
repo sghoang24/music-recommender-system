@@ -81,9 +81,9 @@ class TrackService:
         return await track_execute.get_recommendation_by_likes(db, user_id)
 
     @staticmethod
-    async def get_recommendation_by_track(db: Session, user_id: UUID):
+    async `def get_recommendation_by_track(db: Session, track_id: UUID):
         """Get recommendation tracks by tracks."""
-        return await track_execute.get_recommendation_by_track(db, user_id)
+        return await track_execute.get_recommendation_by_track(db, track_id)`
 
     @staticmethod
     async def get_recommendation_by_user(db: Session, user_id: UUID, limit: int = 50):
