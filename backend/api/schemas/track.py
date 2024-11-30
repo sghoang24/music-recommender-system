@@ -44,3 +44,19 @@ class ListTrackDisplay(BaseModel):
 
     total_entries: int
     lisk_tracks: List[TrackDisplay]
+    
+class TrackUpdateSchema(BaseModel):
+    """Track update schema."""
+    id : UUID
+    title: Optional[str] = Field(None, description="Title of the track.")
+    artist_id: Optional[UUID] = Field(None, description="Artist unique identifier.")
+    genre_id: Optional[UUID] = Field(None, description="Genre unique identifier.")
+    album_id: Optional[UUID] = Field(None, description="Album unique identifier.")
+    cover_art: Optional[str] = Field(None, description="URL of the cover art.")
+    mp3_url: Optional[str] = Field(None, description="URL of the MP3 file.")
+    tags: Optional[List[str]] = Field(None, description="Tags for the track.")
+    
+    class Config:
+        """Configuration."""
+
+        from_attributes = True
