@@ -5,7 +5,8 @@ from __future__ import annotations
 
 import logging
 import sys
-
+import os
+import json
 from core.logging import InterceptHandler
 from dotenv import load_dotenv
 from loguru import logger
@@ -53,3 +54,14 @@ GENRES_MAP = {
     "Classical": "classical",
     "Instrumental": "instrumental",
 }
+
+file_path = "./data/map_track_ids.json"
+
+# Check if the file exists
+if os.path.exists(file_path):
+    with open(file_path, "r", encoding="utf-8") as f:
+        map_track_ids = json.load(f)
+    MAX_IDS_EXIST = True
+else:
+    print(f"File {file_path} does not exist.")
+    MAX_IDS_EXIST = False

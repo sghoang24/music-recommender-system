@@ -166,6 +166,7 @@ class TrackRepository:
                 track_id=track_id,
                 existed_ids=[],
             )
+            track_ids = [UUID(track_id) for track_id in track_ids]
             tracks = db.query(Track).filter(Track.id.in_(track_ids)).all()
             for track in tracks:
                 if track.id not in track_ids_set and track.title not in track_titles_set:  # Check if track ID is already in the set
@@ -192,6 +193,7 @@ class TrackRepository:
                 track_id=track_id,
                 existed_ids=duplicated_ids,
             )
+            track_ids = [UUID(track_id) for track_id in track_ids]
             tracks = (
                 db.query(
                     Track.id.label("id"),

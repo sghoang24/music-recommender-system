@@ -11,7 +11,7 @@ from logger.logger import custom_logger
 router = APIRouter()
 
 
-@router.post("/", include_in_schema=True)
+@router.post("", include_in_schema=True)
 async def recommend(recommend_input: RecommendInputSchema):
     """Recommend."""
     try:
@@ -20,7 +20,7 @@ async def recommend(recommend_input: RecommendInputSchema):
             existed_ids=recommend_input.existed_ids,
         )
         custom_logger.info("[recommendation] Recommend music succesful with track_ids = %s", recommend_input.track_id)
-        return recommend_res
+        return {'recommend_ids': recommend_res}
 
     except ValueError as e:
         error_object: BaseErrorMessage = e.args[0]

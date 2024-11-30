@@ -2,10 +2,9 @@
 """Recommendation service."""
 
 from typing import List
-from uuid import UUID
 
 import numpy as np
-from core.config import TOP_K, embedd_metadata, embeded_images, labels
+from core.config import TOP_K, embedd_metadata, embeded_images, labels, map_track_ids
 
 
 class RecommendationService:
@@ -15,18 +14,20 @@ class RecommendationService:
         pass
 
     @staticmethod
-    def get_recommendation(track_id: UUID, existed_ids: List[UUID] = None) -> List[UUID]:
+    def get_recommendation(track_id: str, existed_ids: List[str] = None) -> List[str]:
         """Get recommendation."""
+        prediction_anchor_1, prediction_anchor_2 = [], []
         prediction_songs = []
         predictions_metadata = []
         predictions_label = []
         distance_array = []
         list_recommend_ids = []
         recommendations = 0
+        print(labels)
 
         # Calculate the latent feature vectors for all the songs.
         for idx, label in enumerate(labels):
-            if label == track_id:
+            if label == map_track_ids[track_id]:
                 prediction_anchor_1 = embeded_images[idx]
                 prediction_anchor_2 = embedd_metadata[label]
             else:
@@ -53,7 +54,7 @@ class RecommendationService:
         while recommendations < TOP_K:
             index = np.argmax(distance_array)
             if (
-                predictions_label[index] != track_id
+                predictions_label[index] != map_track_ids[track_id]
                 and predictions_label[index] not in list_recommend_ids
                 and predictions_label[index] not in existed_ids
             ):

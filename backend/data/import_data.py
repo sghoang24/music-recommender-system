@@ -9,7 +9,12 @@ print(f"sys_root = {code_root}")
 if code_root not in sys.path:
     sys.path.append(code_root)
 
+import json
 import pandas as pd
+from pandas import DataFrame
+from sqlalchemy.orm import Session
+from tqdm import tqdm
+
 from api.database.execute import delete_all
 from api.database.models import Album, Artist, Genre, Track, db
 from api.schemas.album import AlbumCreateSchema
@@ -20,9 +25,6 @@ from api.services.album_service import album_service
 from api.services.artist_service import artist_service
 from api.services.genre_service import genre_service
 from api.services.track_service import track_service
-from pandas import DataFrame
-from sqlalchemy.orm import Session
-from tqdm import tqdm
 
 
 def process_data(db: Session, df: DataFrame):
@@ -67,10 +69,12 @@ def process_data(db: Session, df: DataFrame):
     print("Done save artists...")
 
     # df = df.drop(columns=['album', 'artist', 'genre'])
-    track_list = []
+    track_list, track_list_ids = [], []
+    map_track_ids = {}
     progress_bar = tqdm(df.iterrows(), desc="Import data", total=len(df))
     for index, row in progress_bar:
         progress_bar.set_description(row["title"])
+        track_list_ids.append(row["id"])
         track_list.append(
             TrackCreateSchema(
                 title=row["title"],
@@ -82,9 +86,14 @@ def process_data(db: Session, df: DataFrame):
                 tags=row["tags"],
             )
         )
-        if index % 100 == 0:
-            _ = track_service.create_tracks_bulk(db, track_list)
-            track_list = []
+        if index != 0 and index % 100 == 0:
+            create_tracks = track_service.create_tracks_bulk(db, track_list)
+            for idx, create_track in zip(track_list_ids, create_tracks):
+                map_track_ids[str(create_track.id)] = idx
+            track_list, track_list_ids = [], []
+
+    with open('data/map_track_ids.json', 'w', encoding='utf-8') as f:
+        json.dump(map_track_ids, f)
     return df
 
 
@@ -97,7 +106,7 @@ def extract_tags(tag_string: str):
 
 def import_data():
     """Import data."""
-    df = pd.read_csv("tracks_rows.csv")
+    df = pd.read_csv("data/tracks_rows.csv")
     df["tags"] = df["tags"].apply(extract_tags)
     df = process_data(db.SessionLocal(), df)
 

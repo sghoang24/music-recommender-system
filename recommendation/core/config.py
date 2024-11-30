@@ -46,7 +46,11 @@ logger.configure(handlers=[{"sink": sys.stderr, "level": LOGGING_LEVEL}])
 
 TOP_K = 5
 
+print("Read config")
 embeded_images = np.load("./data/embeded_images.npy")
 labels = np.load("./data/labels.npy")
 with open("./data/embedd_metadata.json", "r", encoding="utf-8") as f:
     embedd_metadata = json.load(f)
+
+with open("./data/map_track_ids.json", "r", encoding="utf-8") as f:
+    map_track_ids = json.load(f)
