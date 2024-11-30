@@ -59,6 +59,9 @@ def get_tracks_by_user_preferences(db: Session, user_id: UUID, limit: int = 100)
         track = track.limit(limit)
     return track.all()
 
+def get_track_by_name(db: Session, track_name: str) -> List[Track]:
+    """Search tracks by name."""
+    return db.query(Track).filter(Track.title == track_name).all()
 
 def get_random_tracks(db: Session, limit: int = 10) -> List[Track]:
     """Get random tracks with limit."""
@@ -75,11 +78,12 @@ def search_tracks(db: Session, query: str, genres: str, limit: int = 100):
     if genres.lower() != "all":
         genres = genres.split(",")
         genres = [GENRES_MAP[genre] for genre in genres]
-    search_artists = artist_execute.get_artists_by_name(db=db, artist_name=query)
+    search_artists = artist_execute.search_artists_by_name(db=db, artist_name=query)
+    print(search_artists)
     search_artist_ids = [artist.id for artist in search_artists]
     tracks = db.query(Track).filter(or_(Track.title.like(f"%{query}%"), Track.artist_id.in_(search_artist_ids)))
 
-    if genres.lower() != "All":
+    if genres.lower() != "all":
         all_genres = genre_execute.get_all_genres(db=db, offset=0, limit=None)
         all_genre_ids = [genre.id for genre in all_genres if genre.name in genres]
         tracks = tracks.filter(Track.genre_id.in_(all_genre_ids))
@@ -87,15 +91,28 @@ def search_tracks(db: Session, query: str, genres: str, limit: int = 100):
         tracks = tracks.limit(limit)
     return tracks.all()
 
+def update_track(db: Session, track_id: UUID, track: Track) -> Track:
+    """Update track."""
+    track_query = db.query(Track).filter(Track.id == track_id)
+    existing_track = track_query.first()
+    if not existing_track:
+        return None
+
+    track_query.update(track, synchronize_session=False)
+    db.commit()
+    db.refresh(existing_track)
+    return existing_track
 
 def delete_track(db: Session, track_id: UUID) -> Track:
     """Delete track."""
     try:
-        if track := db.query(Track).filter(Track.id == track_id):
-            db.delete(track)
-            db.commit()
-            return track
-
+        track = db.query(Track).filter(Track.id == track_id).first()
+        if not track:
+            raise ValueError(f"Track with id {track_id} not found.")
+        
+        db.delete(track)
+        db.commit()
+        return track
     except IntegrityError as e:
         # Handle any IntegrityError, such as foreign key violations here
         db.rollback()
