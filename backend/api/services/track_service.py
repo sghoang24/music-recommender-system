@@ -38,6 +38,16 @@ class TrackService:
         return track_execute.get_track(db, track_id)
     
     @staticmethod
+    def get_random_tracks(db: Session, limit: int) -> List[Track]:
+        """Get random tracks."""
+        return track_execute.get_random_tracks(db, limit)
+    
+    @staticmethod
+    def get_track_by_artist(db: Session, artist_id: int, limit: int = 10) -> List[Track]:
+        """Get track by artist."""
+        return track_execute.get_track_by_artist(db, artist_id, limit)
+    
+    @staticmethod
     def update_track(db: Session, track_update: TrackUpdateSchema) -> Track:
         """Update track."""
         track_id = track_update.id
