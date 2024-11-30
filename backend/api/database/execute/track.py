@@ -139,14 +139,13 @@ class TrackRepository:
         track = (
             db.query(Track)
             .filter(Track.genre_id.in_(all_genre_ids))
-            .order_by(func.random)
+            .order_by(func.random())
         )
         if limit:
             track = track.limit(limit)
         return track.all()
 
-    @staticmethod
-    async def get_recommendation_by_likes(db: Session, user_id: UUID):
+    async def get_recommendation_by_likes(self, db: Session, user_id: UUID):
         """Get recommendations by likes."""
         liked_tracks = liked_track_execute.get_liked_tracks_by_user(
             db=db,
@@ -250,7 +249,7 @@ class TrackRepository:
 
     async def get_recommendation_by_user(self, db: Session, user_id: UUID, limit: int = 50):
         """Get recommendations by user."""
-        # Check if liked tracks by user exist 
+        # Check if liked tracks by user exist
         recommended_tracks_by_likes = await self.get_recommendation_by_likes(
             db=db,
             user_id=user_id,
@@ -260,7 +259,7 @@ class TrackRepository:
             return recommended_tracks_by_likes
         
         # Get tracks by preferences
-        tracks = self.get_tracks_by_user_preferences(
+        tracks = await self.get_tracks_by_user_preferences(
             db=db,
             user_id=user_id,
             limit=limit,
