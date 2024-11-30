@@ -43,7 +43,7 @@ class ListTrackDisplay(BaseModel):
     """List track display."""
 
     total_entries: int
-    lisk_tracks: List[TrackDisplay]
+    list_tracks: List[TrackDisplay]
     
 class TrackUpdateSchema(BaseModel):
     """Track update schema."""

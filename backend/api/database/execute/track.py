@@ -134,7 +134,7 @@ class TrackRepository:
         ]
         return ListTrackDisplay(
             total_entries=len(display_tracks),
-            lisk_tracks=display_tracks,
+            list_tracks=display_tracks,
         )
 
     @staticmethod
@@ -182,7 +182,7 @@ class TrackRepository:
         ]
         return ListTrackDisplay(
             total_entries=len(display_tracks),
-            lisk_tracks=display_tracks,
+            list_tracks=display_tracks,
         )
 
     @staticmethod
@@ -224,7 +224,7 @@ class TrackRepository:
         ]
         return ListTrackDisplay(
             total_entries=len(display_tracks),
-            lisk_tracks=display_tracks,
+            list_tracks=display_tracks,
         )
 
     @staticmethod
@@ -281,7 +281,7 @@ class TrackRepository:
         ]
         return ListTrackDisplay(
             total_entries=len(display_tracks),
-            lisk_tracks=display_tracks,
+            list_tracks=display_tracks,
         )
 
     @staticmethod
@@ -356,7 +356,7 @@ class TrackRepository:
         ]
         return ListTrackDisplay(
             total_entries=len(display_tracks),
-            lisk_tracks=display_tracks,
+            list_tracks=display_tracks,
         )
 
     async def get_recommendation_by_likes(self, db: Session, user_id: UUID):
@@ -420,7 +420,7 @@ class TrackRepository:
         ]
         return ListTrackDisplay(
             total_entries=len(display_tracks),
-            lisk_tracks=display_tracks,
+            list_tracks=display_tracks,
         )
 
     @staticmethod
@@ -492,7 +492,7 @@ class TrackRepository:
             )
         return ListTrackDisplay(
             total_entries=len(display_tracks),
-            lisk_tracks=display_tracks,
+            list_tracks=display_tracks,
         )
 
     async def get_recommendation_by_user(self, db: Session, user_id: UUID, limit: int = 50):
