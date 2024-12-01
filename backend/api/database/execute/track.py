@@ -92,8 +92,25 @@ class TrackRepository:
             query = query.offset(offset)
         if limit:
             query = query.limit(limit)
-        query = query.options(orm.undefer(Track.updated_at))
-        return query.all()
+        tracks = query.all()
+        display_tracks = [
+            TrackDisplay(
+                id=track.id,
+                title=track.title,
+                artist=track.artist,
+                genre=track.genre,
+                album=track.album,
+                cover_art=track.cover_art,
+                mp3_url=track.mp3_url,
+                tags=track.tags,
+                release_date=track.release_date,
+            )
+            for track in tracks
+        ]
+        return ListTrackDisplay(
+            total_entries=len(display_tracks),
+            list_tracks=display_tracks,
+        )
 
     @staticmethod
     def get_track_by_name(db: Session, track_name: str) -> List[Track]:
@@ -115,8 +132,6 @@ class TrackRepository:
             .join(Genre, Genre.id == Track.genre_id)
             .filter(Track.title == track_name)
         )
-        if limit:
-            tracks = tracks.limit(limit)
         tracks = tracks.all()
         display_tracks = [
             TrackDisplay(
